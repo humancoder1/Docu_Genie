@@ -1,0 +1,6 @@
+.env
+env/
+model.py
+PDF_Downloader.py
+test.ipynb
+# .gitignore
