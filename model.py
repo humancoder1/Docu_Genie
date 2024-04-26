@@ -20,12 +20,17 @@ load_dotenv()
 #Configuring the GenAI key
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
+cassio.init(token=os.getenv("ASTRA_DB_APPLICATION_TOKEN") , database_id=os.getenv("ASTRA_DB_ID"))
+
+# Function to creat Text Chunks 
 def get_text_chunks(input_text):
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size = 10000 , chunk_overlap = 1000
     )
     chunks = text_splitter.split_text(input_text)
     return chunks
+
+
 
 
 text = downloader("URL")
