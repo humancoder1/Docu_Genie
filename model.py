@@ -36,8 +36,12 @@ def get_vector_store(input_text_chunks):
     astra_vector_store = Cassandra(
         embedding= embeddings , table_name="vector_table" , session=None , keyspace=None
     ) 
-    astra_vector_store.add_texts(input_text_chunks[ : 50])
+    astra_vector_store.add_texts(input_text_chunks)
     astra_vector_index = VectorStoreIndexWrapper(vectorstore=astra_vector_store)
+
+    return astra_vector_index
+
+
 
     return astra_vector_index
 
@@ -58,5 +62,3 @@ def get_conversational_chain():
 
     return chain
 
-# URL = "https://clri-ltc.ca/files/2018/09/TEMP-PDF-Document.pdf";
-text = downloader("URL")
