@@ -20,6 +20,7 @@ load_dotenv()
 #Configuring the GenAI key
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
+#Inintializing the Connection to the Database
 cassio.init(token=os.getenv("ASTRA_DB_APPLICATION_TOKEN") , database_id=os.getenv("ASTRA_DB_ID"))
 
 # Function to creat Text Chunks 
@@ -30,7 +31,14 @@ def get_text_chunks(input_text):
     chunks = text_splitter.split_text(input_text)
     return chunks
 
+def get_vector_store(input_text_chunks):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    astra_vector_store = Cassandra(
+        embedding= embeddings , table_name="vector_table" , session=None , keyspace=None
+    ) 
+    astra_vector_store.add_texts(input_text_chunks[ : 50])
+    astra_vector_index = VectorStoreIndexWrapper(vectorstore=astra_vector_store)
 
 
-
+# URL = "https://clri-ltc.ca/files/2018/09/TEMP-PDF-Document.pdf";
 text = downloader("URL")
