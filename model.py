@@ -39,6 +39,24 @@ def get_vector_store(input_text_chunks):
     astra_vector_store.add_texts(input_text_chunks[ : 50])
     astra_vector_index = VectorStoreIndexWrapper(vectorstore=astra_vector_store)
 
+    return astra_vector_index
+
+
+def get_conversational_chain():
+    prompt_template = """
+    Answer the question as detailed as possible from the provided context, make sure to provide all the details , if the answer is not in provided
+    context just say , "answer is not available in the context , don't provide the wrong answer\n\n 
+    Context:\n {context}?\n
+    Question:\n {question}\n
+
+    Answer:
+"""
+
+    model = ChatGoogleGenerativeAI(model="gemini-pro" , temperature=0.3) 
+    promt = PromptTemplate(template=prompt_template , input_variables=["context" , "question"])
+    chain = load_qa_chain(model , chain_type="stuff" , promt=promt)
+
+    return chain
 
 # URL = "https://clri-ltc.ca/files/2018/09/TEMP-PDF-Document.pdf";
 text = downloader("URL")
