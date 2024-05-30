@@ -1,27 +1,15 @@
 import os
-import cassio
-from dotenv import load_dotenv
+import torch
+import transformers
+from transformers import pipeline
 from PDF_Downloader import downloader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-import google.generativeai as genai
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
 
-from langchain.vectorstores.cassandra import Cassandra
-from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.chains.question_answering import load_qa_chain
-
-from langchain.prompts import PromptTemplate
-
-#Loading Environment varibales
-load_dotenv()
-
-#Configuring the GenAI key
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-
-#Inintializing the Connection to the Database
-cassio.init(token=os.getenv("ASTRA_DB_APPLICATION_TOKEN") , database_id=os.getenv("ASTRA_DB_ID"))
 
 # Function to creat Text Chunks 
 def get_text_chunks(input_text):

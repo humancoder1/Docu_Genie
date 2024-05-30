@@ -1,7 +1,7 @@
 .env
 env/
 new_model.py
-# model.py
 test.ipynb
-# .gitignore
+data/
 libraries.md
+docs/
