@@ -24,11 +24,13 @@ def get_vector_store(document_chunks):
     return vectordb
 
 
-def get_conversational_chain():
+def get_conversational_chain(vectordb):
 
-    model = ChatGoogleGenerativeAI(model="gemini-pro" , temperature=0.3) 
-    promt = PromptTemplate(template=prompt_template , input_variables=["context" , "question"])
-    chain = load_qa_chain(model , chain_type="stuff" , promt=promt)
+    model = pipeline('text2text-generation', model = "MBZUAI/LaMini-T5-738M" , token=model_token , model_kwargs={"temperature": 0.6})
+    llm=HuggingFacePipeline(pipeline=model, model_kwargs={'temperature':0})
 
-    return chain
-
+    memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+    pdf_qa=ConversationalRetrievalChain.from_llm(llm=llm,
+                                             retriever=vectordb.as_retriever(search_kwargs={'k':6}),
+                                             verbose=False, memory=memory)
+    return pdf_qa
