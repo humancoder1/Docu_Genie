@@ -9,21 +9,17 @@ from langchain.vectorstores import Chroma
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 
-
+model_token = os.environ.get("HUGGINGFACEAPI_TOKEN")
 
 # Function to creat Text Chunks 
 def get_text_chunks(input_text):
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 10000 , chunk_overlap = 1000
-    )
-    chunks = text_splitter.split_text(input_text)
-    return chunks
+    document_splitter = CharacterTextSplitter(chunk_size = 500 , chunk_overlap=0)
+    document_chunks = document_splitter.split_documents(document)
+    return document_chunks
 
 def get_vector_store(input_text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    astra_vector_store = Cassandra(
-        embedding= embeddings , table_name="vector_table" , session=None , keyspace=None
-    ) 
+    embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/all-MiniLM-L6-v2")
+    vectordb = Chroma.from_documents(input_text_chunks , embedding = embeddings , persist_directory = "./data")
     astra_vector_store.add_texts(input_text_chunks)
     astra_vector_index = VectorStoreIndexWrapper(vectorstore=astra_vector_store)
 
