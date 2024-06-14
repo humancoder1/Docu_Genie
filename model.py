@@ -6,13 +6,14 @@ from PDF_Downloader import downloader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
+from langchain import HuggingFacePipeline
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 
 model_token = os.environ.get("HUGGINGFACEAPI_TOKEN")
 
 # Function to creat Text Chunks 
-def get_text_chunks(input_text):
+def get_text_chunks(document):
     document_splitter = CharacterTextSplitter(chunk_size = 500 , chunk_overlap=0)
     document_chunks = document_splitter.split_documents(document)
     return document_chunks
